@@ -1,0 +1,23 @@
+body {
+  margin: 0;
+  padding: 0;
+  //   background-color: gray;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  box-sizing: border-box;
+}
+
+$desktop: 1171px;
+$tablet: 1023px;
+$mobile: 767px;
+
+@mixin --desktop {
+  @media (min-width: $desktop) {
+    @content;
+  }
+}
+
+@mixin --mobile {
+  @media (max-width: $mobile) {
+    @content;
+  }
+}

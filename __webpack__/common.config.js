@@ -2,7 +2,6 @@ const webpack = require("webpack");
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const FaviconsWebpackPlugin = require("favicons-webpack-plugin");
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
 const FileManagerPlugin = require("filemanager-webpack-plugin");
 
@@ -32,30 +31,7 @@ const plugins = [
     template: path.join(PUBLIC_DIR, "index.html"),
     filename: "index.html",
   }),
-  //
-  new FaviconsWebpackPlugin({
-    logo: path.resolve(PUBLIC_DIR, "favicon.svg"),
-    prefix: "/favicons/",
-    outputPath: path.resolve(BUILD_DIR, "favicons"),
-    mode: "webapp",
-    // Injecting into all HTML Files or separately (for an every instance of HtmlWebpackPlugin)
-    // inject: true,
-    inject: (htmlPlugin) =>
-      path.basename(htmlPlugin.options.filename) === "index.html",
-    favicons: {
-      icons: {
-        appleIcon: false, // Apple touch icons.
-        appleStartup: false, // Apple startup images.
-        android: false, // Android homescreen icon.
-        favicons: true, // Regular favicons.
-        coast: false, // Opera Coast icon.
-        firefox: false, // Firefox OS icons.
-        windows: false, // Windows 8 tile icons.
-        yandex: false, // Yandex browser icon.
-      },
-    },
-    cache: false, // Disallow caching the assets across webpack builds.
-  }),
+
   new webpack.HotModuleReplacementPlugin(), // For page reloading
 ];
 
@@ -87,13 +63,6 @@ const devServer = {
   devMiddleware: {
     writeToDisk: true,
   },
-  static: [
-    // Required to use favicons located in a separate directory as assets
-    // Should use with historyApiFallback, to avoid of 404 for routes
-    {
-      directory: path.join(BUILD_DIR, "favicons"),
-    },
-  ],
 };
 
 module.exports = {
@@ -114,7 +83,7 @@ module.exports = {
   },
   // Modules resolved
   resolve: {
-    extensions: [".tsx", ".ts", ".js"],
+    extensions: [".tsx", ".ts", ".js", ".css"],
   },
   module: {
     strictExportPresence: true, // Strict mod to avoid of importing non-existent objects
@@ -138,15 +107,10 @@ module.exports = {
         use: [
           MiniCssExtractPlugin.loader,
           {
-            loader: "css-loader", // translates css into CommonJS
+            loader: "css-loader",
             options: {
               esModule: true,
-              // css modules
-              modules: {
-                localIdentName: "[name]__[local]__[hash:base64:5]", // format of output
-                namedExport: true, // named exports instead of default
-              },
-            },
+            }, // translates css into CommonJS
           },
           {
             // autoprefixer
