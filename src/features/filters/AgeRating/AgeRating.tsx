@@ -2,6 +2,11 @@ import { FormItem, Radio } from "@vkontakte/vkui";
 import React, { FC } from "react";
 import { AGE_RATINGS } from "./constants";
 import { useQueryAgeRating } from "./hooks";
+enum RUSSIAN_AGES {
+  children = "Для детей",
+  teenagers = "Для подростков",
+  adult = "Для взрослых",
+}
 export const AgeRating: FC = () => {
   const [selectedAgeRating, handleCheckboxChange] = useQueryAgeRating();
 
@@ -25,7 +30,7 @@ export const AgeRating: FC = () => {
           }
           onChange={handleCheckboxChange}
         >
-          {age}
+          {RUSSIAN_AGES[age as keyof typeof RUSSIAN_AGES]}
         </Radio>
       ))}
     </FormItem>

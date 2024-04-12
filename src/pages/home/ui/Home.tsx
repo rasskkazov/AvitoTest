@@ -11,8 +11,8 @@ import "./Home.scss";
 // import { getMainData } from "../api";
 // import { HomeDataType } from "../types";
 import { res1 } from "../../../../token/mockData";
-import { MainPagination, useMoviesSearchHistory } from "../../../features";
-import { MoviesSearch } from "../../../features";
+import { MainPagination } from "../../../features";
+import { MoviesSearch, useMoviesSearchHistory } from "../../../widgets";
 import { debounce } from "../../../shared/utils";
 
 export const Home = () => {
