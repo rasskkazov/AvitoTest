@@ -1,15 +1,24 @@
 import { Panel, Button, FormItem, FormLayoutGroup } from "@vkontakte/vkui";
 import React from "react";
-import { AgeRating } from "../../../features";
+import { AgeRating, Country } from "../../../features";
+import { Year } from "../../../features";
+import { PagesNumber } from "../../../features/filters";
 
 export const MoviesFilters = () => {
   return (
     <Panel>
       <FormLayoutGroup>
         <AgeRating />
+        <Country />
+      </FormLayoutGroup>
+
+      <Year />
+      <PagesNumber />
+
+      <FormLayoutGroup>
         <FormItem>
-          <Button size="l" stretched onClick={() => {}}>
-            Показать результаты
+          <Button size="m" stretched onClick={() => {}}>
+            Применить
           </Button>
         </FormItem>
       </FormLayoutGroup>
