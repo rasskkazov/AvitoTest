@@ -11,9 +11,10 @@ import {
 } from "@vkontakte/vkui";
 import React, { useEffect, useState } from "react";
 import { Carousel, MovieDescription, MoviePoster } from "../../../features";
-import { useNavigate, useParams } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { getMovieById, getPaginatedData, getPaginatedDataParams } from "../api";
 import { ImageDataType, MovieDataType } from "../types";
+import { ROUTES } from "../../../app/router/constants";
 export const Movie = () => {
   const { id } = useParams();
   const [movieData, setMovieData] = useState<MovieDataType | null>(null);
@@ -77,9 +78,21 @@ export const Movie = () => {
       <img
         src={item.url}
         alt="poster"
-        style={{ width: "100%", aspectRatio: "3/2" }}
+        style={{ width: "100%", maxHeight: "20rem", objectFit: "contain" }}
       />
     </div>
+  ));
+  const similarItems = movieData?.similarMovies.map((item) => (
+    <NavLink to={`${ROUTES.MOVIE}${item.id}`} key={item.id}>
+      <div>
+        <img
+          src={item.poster?.url}
+          alt={item.name}
+          title={item.name}
+          style={{ width: "100%", aspectRatio: "2/3" }}
+        />
+      </div>
+    </NavLink>
   ));
 
   const navigate = useNavigate();
@@ -106,6 +119,9 @@ export const Movie = () => {
               />
               <Group header={<Header mode="secondary">Постеры</Header>}>
                 <Carousel elements={posterItems ?? []} />
+              </Group>
+              <Group header={<Header mode="secondary">Похожие фильмы</Header>}>
+                <Carousel elements={similarItems ?? []} />
               </Group>
             </Panel>
           </SplitCol>
