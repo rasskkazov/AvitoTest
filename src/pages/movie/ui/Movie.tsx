@@ -15,6 +15,7 @@ import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { getMovieById, getPaginatedData, getPaginatedDataParams } from "../api";
 import { ImageDataType, MovieDataType } from "../types";
 import { ROUTES } from "../../../app/router/constants";
+import { PosterCarousel } from "../../../widgets";
 export const Movie = () => {
   const { id } = useParams();
   const [movieData, setMovieData] = useState<MovieDataType | null>(null);
@@ -62,26 +63,6 @@ export const Movie = () => {
     });
   }, [id]);
 
-  const posterItems = imageData?.docs.map((item) => (
-    <div
-      key={item.url}
-      style={{
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        alignItems: "center",
-        backgroundColor: "black",
-        borderRadius: "1rem",
-        overflow: "hidden",
-      }}
-    >
-      <img
-        src={item.url}
-        alt="poster"
-        style={{ width: "100%", maxHeight: "20rem", objectFit: "contain" }}
-      />
-    </div>
-  ));
   const similarItems = movieData?.similarMovies.map((item) => (
     <NavLink to={`${ROUTES.MOVIE}${item.id}`} key={item.id}>
       <div>
@@ -117,9 +98,8 @@ export const Movie = () => {
                 name={movieData.name}
                 description={movieData.description}
               />
-              <Group header={<Header mode="secondary">Постеры</Header>}>
-                <Carousel elements={posterItems ?? []} />
-              </Group>
+
+              <PosterCarousel imageData={imageData} />
               <Group header={<Header mode="secondary">Похожие фильмы</Header>}>
                 <Carousel elements={similarItems ?? []} />
               </Group>
