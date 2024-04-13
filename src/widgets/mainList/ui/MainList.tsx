@@ -16,10 +16,10 @@ export const MainList: FC<MainListProps> = ({ ...props }: MainListProps) => {
             <NavLink to={`${ROUTES.MOVIE}${movie.id}`}>
               <div className="mainList__container">
                 <img
-                  src={movie.poster.url}
+                  src={movie.poster?.url}
                   alt={movie.name}
                   title={movie.name}
-                  style={{ width: "100%" }}
+                  style={{ width: "100%", aspectRatio: "2/3" }}
                 />
               </div>
             </NavLink>

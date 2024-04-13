@@ -4,46 +4,77 @@ import {
   SplitCol,
   Panel,
   useAdaptivityWithJSMediaQueries,
+  Spinner,
+  Pagination,
 } from "@vkontakte/vkui";
 import { MainList, MoviesFilters } from "../../../widgets";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import "./Home.scss";
-import { updateMainData } from "../api";
+import { getMovies, searchMovies } from "../api";
 
-import { res1 } from "../../../../token/mockData";
-import { MainPagination } from "../../../features";
 import { MoviesSearch, useMoviesSearchHistory } from "../../../widgets";
 import { debounce } from "../../../shared/utils";
-import { HomeDataType } from "../types";
-import { usePaginationQuery } from "../hooks";
+import { HomeDataType, QueryParams } from "../types";
+import { useSearchParams } from "react-router-dom";
+import { useQuery } from "../../../features/filters/hooks";
+import { useRequest } from "../hooks";
+const extractQuery = (searchParams: URLSearchParams): QueryParams => ({
+  page: searchParams.get("page") ?? "1",
+  ageRating: searchParams.get("ageRating") ?? undefined,
+  ["countries.name"]: searchParams.get("country") ?? undefined,
+  limit: searchParams.get("limit") ?? "10",
+  year: searchParams.get("year") ?? undefined,
+});
 
 export const Home = () => {
-  // const [mainData, setMainData] = useState<HomeDataType>();
+  // const [data, setMainData] = useState<HomeDataType | null>(null);
+  const [params, setParams] = useState<QueryParams | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [searchParams] = useSearchParams();
+  const [page, setPage] = useQuery("page", "1");
 
-  // useEffect(() => {
-  //   updateMainData().then((data) => setMainData(data));
-  // }, []);
-  const mainData = res1;
+  const { status, errorMessage, data, performRequest } =
+    useRequest<HomeDataType | null>();
+
+  useEffect(() => {
+    if (!params) return;
+    performRequest((signal) => getMovies(params, signal));
+  }, [params]);
+
+  const applyFilters = useCallback(() => {
+    setParams({ ...extractQuery(searchParams), page });
+  }, [searchParams, page]);
+
+  useEffect(() => {
+    if (searchQuery) {
+      performRequest((signal) =>
+        searchMovies({ query: searchQuery, page, limit: "10" }, signal)
+      );
+    } else {
+      applyFilters();
+    }
+  }, [page, searchQuery]);
+
+  //searchbar
+  const [history, updateHistory] = useMoviesSearchHistory();
+  const getDataDebounced = useMemo(
+    () =>
+      debounce((arg: string) => {
+        setSearchQuery(arg);
+        setPage("1");
+        if (!arg) return;
+        updateHistory(arg);
+      }, 2000),
+    [updateHistory]
+  );
 
   const { viewWidth } = useAdaptivityWithJSMediaQueries();
   const filters = (
     <Group>
-      <MoviesFilters />
+      <MoviesFilters apply={applyFilters} />
     </Group>
   );
 
-  const [updateHistory, history] = useMoviesSearchHistory();
-  const getDataDebounced = debounce((arg: string) => {
-    if (!arg) return;
-    updateHistory(arg);
-    console.log(`fetch ${arg}`);
-  }, 2000);
-
-  const [handlePageChange] = usePaginationQuery();
-
-  useEffect(() => {
-    handlePageChange(1);
-  }, []);
   return (
     <SplitLayout style={{ justifyContent: "center" }}>
       {viewWidth > 3 && (
@@ -56,12 +87,28 @@ export const Home = () => {
           {viewWidth < 4 && filters}
           <Group>
             <MoviesSearch onChange={getDataDebounced} history={history} />
-            {mainData.docs && (
+            {status === "success" && data && data.docs && (
               <div className="container">
-                <MainList docs={mainData.docs} />
-                <MainPagination
-                  mainData={mainData}
-                  handleChange={handlePageChange}
+                <MainList docs={data.docs} />
+                <Pagination
+                  currentPage={data.page}
+                  totalPages={data.pages - 1}
+                  onChange={(n) => setPage(n.toString())}
+                />
+              </div>
+            )}
+            {status === "loading" && (
+              <div>
+                <Spinner size="large" style={{ margin: "20px 0" }} />
+              </div>
+            )}
+            {status === "error" && (
+              <div>
+                {errorMessage}
+                <Pagination
+                  currentPage={Number(page)}
+                  totalPages={Number(page)}
+                  onChange={(n) => setPage(n.toString())}
                 />
               </div>
             )}

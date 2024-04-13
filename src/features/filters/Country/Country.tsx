@@ -6,17 +6,16 @@ import { useQuery } from "../hooks";
 const countryToRender = [
   {
     name: "Все",
-    slug: "any",
   },
 ]
   .concat(countries)
   .map((country) => ({
     label: country.name,
-    value: country.slug,
+    value: country.name,
   }));
 
 export const Country = () => {
-  const [country, setCountry] = useQuery("country", "any");
+  const [country, setCountry] = useQuery("country", "Все");
   const handleCountryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setCountry(event.target.value);
   };

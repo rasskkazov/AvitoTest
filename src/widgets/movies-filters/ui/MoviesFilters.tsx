@@ -4,7 +4,10 @@ import { AgeRating, Country } from "../../../features";
 import { Year } from "../../../features";
 import { PagesNumber } from "../../../features/filters";
 
-export const MoviesFilters = () => {
+type MoviesFiltersProps = {
+  apply: () => void;
+};
+export const MoviesFilters = (props: MoviesFiltersProps) => {
   return (
     <Panel>
       <FormLayoutGroup>
@@ -17,7 +20,7 @@ export const MoviesFilters = () => {
 
       <FormLayoutGroup>
         <FormItem>
-          <Button size="m" stretched onClick={() => {}}>
+          <Button size="m" stretched onClick={props.apply}>
             Применить
           </Button>
         </FormItem>

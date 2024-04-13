@@ -6,3 +6,6 @@ export type HomeDataType = {
   page: number;
   pages: number;
 };
+
+type QueryParam = "page" | "ageRating" | "countries.name" | "limit" | "year";
+export type QueryParams = Partial<Record<QueryParam, string>>;
