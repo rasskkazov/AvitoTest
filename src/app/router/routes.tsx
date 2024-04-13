@@ -8,7 +8,7 @@ export const AppRoutes = () => {
   return (
     <Routes>
       <Route path={ROUTES.HOME} element={<Home />} />
-      <Route path={ROUTES.MOVIE} element={<Movie />} />
+      <Route path={`${ROUTES.MOVIE}:id`} element={<Movie />} />
       <Route path={ROUTES.RANDOM_MOVIE} element={<></>} />
     </Routes>
   );

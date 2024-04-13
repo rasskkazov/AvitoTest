@@ -13,8 +13,6 @@ const options = {
 const BASE_URL = "https://api.kinopoisk.dev/v1.4";
 axios.defaults.baseURL = BASE_URL;
 
-// "https://api.kinopoisk.dev/v1.4/movie?page=1&limit=3&selectFields=id&selectFields=name&selectFields=ageRating&selectFields=year&selectFields=countries&selectFields=poster",
-
 export const getMovies = (params: QueryParams, signal?: AbortSignal) => {
   return axios.get("/movie", { ...options, params, signal });
 };

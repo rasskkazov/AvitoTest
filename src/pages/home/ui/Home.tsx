@@ -17,7 +17,7 @@ import { debounce } from "../../../shared/utils";
 import { HomeDataType, QueryParams } from "../types";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "../../../features/filters/hooks";
-import { useRequest } from "../hooks";
+import { useRequest } from "../../hooks";
 const extractQuery = (searchParams: URLSearchParams): QueryParams => ({
   page: searchParams.get("page") ?? "1",
   ageRating: searchParams.get("ageRating") ?? undefined,
@@ -64,7 +64,7 @@ export const Home = () => {
         setPage("1");
         if (!arg) return;
         updateHistory(arg);
-      }, 2000),
+      }, 1000),
     [updateHistory]
   );
 
