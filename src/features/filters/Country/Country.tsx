@@ -1,7 +1,7 @@
 import { FormItem, Select } from "@vkontakte/vkui";
-import React, { FC } from "react";
+import React from "react";
 import { countries } from "../../../../token/mockData";
-import { useQueryCountry } from "./hooks";
+import { useQuery } from "../hooks";
 
 const countryToRender = [
   {
@@ -15,15 +15,18 @@ const countryToRender = [
     value: country.slug,
   }));
 
-export const Country: FC = () => {
-  const [selectedCountry, handleCountryChange] = useQueryCountry();
+export const Country = () => {
+  const [country, setCountry] = useQuery("country", "any");
+  const handleCountryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setCountry(event.target.value);
+  };
   return (
     <FormItem top="Страна" htmlFor="start">
       <Select
         searchable
         name="country"
         id="countries"
-        value={selectedCountry}
+        value={country}
         onChange={handleCountryChange}
         options={countryToRender}
       />

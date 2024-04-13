@@ -6,20 +6,22 @@ import {
   useAdaptivityWithJSMediaQueries,
 } from "@vkontakte/vkui";
 import { MainList, MoviesFilters } from "../../../widgets";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Home.scss";
-// import { getMainData } from "../api";
-// import { HomeDataType } from "../types";
+import { updateMainData } from "../api";
+
 import { res1 } from "../../../../token/mockData";
 import { MainPagination } from "../../../features";
 import { MoviesSearch, useMoviesSearchHistory } from "../../../widgets";
 import { debounce } from "../../../shared/utils";
+import { HomeDataType } from "../types";
+import { usePaginationQuery } from "../hooks";
 
 export const Home = () => {
   // const [mainData, setMainData] = useState<HomeDataType>();
 
   // useEffect(() => {
-  //   getMainData().then((data) => setMainData(data));
+  //   updateMainData().then((data) => setMainData(data));
   // }, []);
   const mainData = res1;
 
@@ -37,6 +39,11 @@ export const Home = () => {
     console.log(`fetch ${arg}`);
   }, 2000);
 
+  const [handlePageChange] = usePaginationQuery();
+
+  useEffect(() => {
+    handlePageChange(1);
+  }, []);
   return (
     <SplitLayout style={{ justifyContent: "center" }}>
       {viewWidth > 3 && (
@@ -52,7 +59,10 @@ export const Home = () => {
             {mainData.docs && (
               <div className="container">
                 <MainList docs={mainData.docs} />
-                <MainPagination mainData={mainData} handleChange={() => {}} />
+                <MainPagination
+                  mainData={mainData}
+                  handleChange={handlePageChange}
+                />
               </div>
             )}
           </Group>
@@ -61,4 +71,3 @@ export const Home = () => {
     </SplitLayout>
   );
 };
-<Home />;

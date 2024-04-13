@@ -3,7 +3,7 @@ import React, { FC } from "react";
 import { HomeDataType } from "../../../pages";
 type MainPaginationProps = {
   mainData: HomeDataType;
-  handleChange: () => void;
+  handleChange: (page: number) => void;
 };
 export const MainPagination: FC<MainPaginationProps> = ({
   ...props

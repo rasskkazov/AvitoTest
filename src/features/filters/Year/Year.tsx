@@ -1,9 +1,13 @@
 import { FormItem, Select } from "@vkontakte/vkui";
-import React, { FC } from "react";
-import { useQueryYear } from "./hooks";
+import React from "react";
+import { useQuery } from "../hooks";
 const FIRST_MOVIE_YEAR = 1895;
-export const Year: FC = () => {
-  const [selectedYear, handleYearChange] = useQueryYear();
+export const Year = () => {
+  const [year, setYear] = useQuery("year", "any");
+
+  const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setYear(event.target.value);
+  };
 
   const curYear = new Date().getFullYear();
 
@@ -20,7 +24,7 @@ export const Year: FC = () => {
         searchable
         name="year"
         id="years"
-        value={selectedYear}
+        value={year}
         onChange={handleYearChange}
         options={years}
       ></Select>

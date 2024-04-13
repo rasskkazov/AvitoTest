@@ -1,15 +1,17 @@
 import { FormItem, Radio } from "@vkontakte/vkui";
-import React, { FC } from "react";
+import React from "react";
 import { AGE_RATINGS } from "./constants";
-import { useQueryAgeRating } from "./hooks";
+import { useQuery } from "../hooks";
 enum RUSSIAN_AGES {
   children = "Для детей",
   teenagers = "Для подростков",
   adult = "Для взрослых",
 }
-export const AgeRating: FC = () => {
-  const [selectedAgeRating, handleCheckboxChange] = useQueryAgeRating();
-
+export const AgeRating = () => {
+  const [ageRating, setAgeRating] = useQuery("ageRating", "all");
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setAgeRating(event.target.value);
+  };
   return (
     <FormItem top="Возраст">
       <Radio
@@ -25,9 +27,7 @@ export const AgeRating: FC = () => {
           key={age}
           name="radio"
           value={AGE_RATINGS[age as keyof typeof AGE_RATINGS]}
-          checked={
-            selectedAgeRating === AGE_RATINGS[age as keyof typeof AGE_RATINGS]
-          }
+          checked={ageRating === AGE_RATINGS[age as keyof typeof AGE_RATINGS]}
           onChange={handleCheckboxChange}
         >
           {RUSSIAN_AGES[age as keyof typeof RUSSIAN_AGES]}

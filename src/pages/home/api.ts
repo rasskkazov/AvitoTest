@@ -9,7 +9,7 @@ const options = {
   },
 };
 
-export const getMainData = () => {
+export const updateMainData = () => {
   return fetch(
     "https://api.kinopoisk.dev/v1.4/movie?page=1&limit=3&selectFields=id&selectFields=name&selectFields=ageRating&selectFields=year&selectFields=countries&selectFields=poster",
     options
