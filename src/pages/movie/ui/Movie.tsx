@@ -10,12 +10,17 @@ import {
   Spinner,
 } from "@vkontakte/vkui";
 import React, { useEffect, useState } from "react";
-import { Carousel, MovieDescription, MoviePoster } from "../../../features";
+import { Carousel } from "../../../features";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { getMovieById, getPaginatedData, getPaginatedDataParams } from "../api";
 import { ImageDataType, MovieDataType } from "../types";
 import { ROUTES } from "../../../app/router/constants";
-import { PosterCarousel } from "../../../widgets";
+import {
+  PosterCarousel,
+  MovieDescription,
+  MoviePoster,
+  SimilarMovies,
+} from "../../../widgets";
 export const Movie = () => {
   const { id } = useParams();
   const [movieData, setMovieData] = useState<MovieDataType | null>(null);
@@ -98,11 +103,8 @@ export const Movie = () => {
                 name={movieData.name}
                 description={movieData.description}
               />
-
               <PosterCarousel imageData={imageData} />
-              <Group header={<Header mode="secondary">Похожие фильмы</Header>}>
-                <Carousel elements={similarItems ?? []} />
-              </Group>
+              <SimilarMovies movieData={movieData} />
             </Panel>
           </SplitCol>
           {viewWidth > 3 && (
