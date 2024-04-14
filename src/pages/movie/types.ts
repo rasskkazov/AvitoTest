@@ -29,3 +29,20 @@ export type ActorPaginated = PaginatedData<{
   sex: string;
   age: number | null;
 }>;
+export type SeasonPaginated = PaginatedData<{
+  episodes: {
+    number: number;
+    name: string;
+    enName: string;
+    still: {
+      url: string;
+      previewUrl: string;
+    };
+    duration: number;
+    date?: null;
+    description: string;
+    airDate: string;
+    enDescription: string;
+  }[];
+  id: string;
+}>;

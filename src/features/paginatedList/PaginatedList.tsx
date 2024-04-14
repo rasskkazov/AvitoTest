@@ -22,11 +22,13 @@ export const PaginatedList = (props: PaginatedListData) => {
           </>
         )}
       </List>
-      <Pagination
-        currentPage={props.page}
-        totalPages={props.pages - 1}
-        onChange={(n) => props.onChange(n)}
-      />
+      {props.pages > 1 && (
+        <Pagination
+          currentPage={props.page}
+          totalPages={props.pages}
+          onChange={(n) => props.onChange(n)}
+        />
+      )}
     </div>
   );
 };

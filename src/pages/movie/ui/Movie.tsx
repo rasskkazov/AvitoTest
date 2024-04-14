@@ -13,7 +13,12 @@ import React, { useEffect, useState } from "react";
 import { Carousel, PaginatedList } from "../../../features";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { getMovieById, getPaginatedData, getPaginatedDataParams } from "../api";
-import { ImagePaginated, MovieDataType, ActorPaginated } from "../types";
+import {
+  ImagePaginated,
+  MovieDataType,
+  ActorPaginated,
+  SeasonPaginated,
+} from "../types";
 import { ROUTES } from "../../../app/router/constants";
 import {
   PosterCarousel,
@@ -21,13 +26,15 @@ import {
   MoviePoster,
   SimilarMovies,
   ActorList,
+  SeasonList,
 } from "../../../widgets";
 
 export const Movie = () => {
   const { id } = useParams();
   const [movieData, setMovieData] = useState<MovieDataType | null>(null);
   const [actorData, setActorData] = useState<ActorPaginated | null>(null);
-  const [seasonData, setSeasonData] = useState<ActorPaginated | null>(null);
+  const [seasonData, setSeasonData] = useState<SeasonPaginated | null>(null);
+  const [curSeason, setCurSeason] = useState(1);
   const [reviewData, setReviewData] = useState<ActorPaginated | null>(null);
   const [imageData, setImageData] = useState<ImagePaginated | null>(null);
 
@@ -64,24 +71,25 @@ export const Movie = () => {
       ac.signal
     ).then((res) => {
       setActorData(res.data);
-      console.log(res.data);
     });
     getPaginatedData(
       {
         ...initialParams,
         endpoint: "season",
+        other: { selectFields: "episodes" },
       },
       ac.signal
     ).then((res) => {
-      // setSeasonData(res.data);
+      setSeasonData(res.data);
+      console.log(res.data);
     });
 
     getPaginatedData(
       {
         ...initialParams,
         endpoint: "review",
-      }
-      // signal
+      },
+      ac.signal
     ).then((res) => {
       // setReviewData(res.data);
     });
@@ -137,6 +145,16 @@ export const Movie = () => {
                   <ActorList
                     actorData={actorData}
                     updateActorData={updateActorData}
+                  />
+                )}
+                {seasonData && seasonData.docs.length > 0 && (
+                  <SeasonList
+                    pages={seasonData.docs.length}
+                    page={curSeason}
+                    updateSeasonData={(n) => setCurSeason(n)}
+                    episodes={seasonData.docs[curSeason - 1].episodes.map(
+                      (item) => item.enName
+                    )}
                   />
                 )}
               </Panel>
