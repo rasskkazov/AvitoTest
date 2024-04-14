@@ -20,6 +20,7 @@ import {
   MovieDescription,
   MoviePoster,
   SimilarMovies,
+  ActorList,
 } from "../../../widgets";
 
 export const Movie = () => {
@@ -41,9 +42,6 @@ export const Movie = () => {
       setActorData(res.data);
     });
   };
-  const actorItems = actorData?.docs.map((item) => (
-    <div key={item.id}>{item.enName ?? item.name}</div>
-  ));
 
   useEffect(() => {
     getMovieById(id ?? "").then((res) => {
@@ -136,14 +134,10 @@ export const Movie = () => {
                   <Header size="large">{`Оценка ${movieData.rating.imdb}`}</Header>
                 </Group>
                 {actorData && (
-                  <Group header={<Header mode="secondary">Актеры</Header>}>
-                    <PaginatedList
-                      page={actorData.page}
-                      pages={actorData.pages}
-                      onChange={updateActorData}
-                      elements={actorItems ?? []}
-                    />
-                  </Group>
+                  <ActorList
+                    actorData={actorData}
+                    updateActorData={updateActorData}
+                  />
                 )}
               </Panel>
             </SplitCol>

@@ -13,9 +13,14 @@ export const PaginatedList = (props: PaginatedListData) => {
       style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
     >
       <List>
-        {props.elements.map((item, index) => (
-          <Cell key={index}>{item}</Cell>
-        ))}
+        {props.elements.length === 0 && <div>Список пуст</div>}
+        {props.elements.length && (
+          <>
+            {props.elements.map((item, index) => (
+              <Cell key={index}>{item}</Cell>
+            ))}
+          </>
+        )}
       </List>
       <Pagination
         currentPage={props.page}

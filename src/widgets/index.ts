@@ -7,3 +7,4 @@ export { PosterCarousel } from "./poster-carousel";
 export { MovieDescription } from "./movieDescription";
 export { MoviePoster } from "./moviePoster";
 export { SimilarMovies } from "./similarMovies";
+export { ActorList } from "./paginatedLists/ActorList";
