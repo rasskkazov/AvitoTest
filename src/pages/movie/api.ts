@@ -16,26 +16,39 @@ export const getMovieById = (id: string, signal?: AbortSignal) => {
   return axios.get(`/movie/${id}`, { ...options, signal });
 };
 
-export type getPaginatedDataParams = {
+export type getPaginatedDataProps = {
   endpoint: string;
   movieId: string;
   page: number;
   other?: {
-    [key: string]: string;
+    [key: string]: string | string[];
   };
 };
 export const getPaginatedData = (
-  params: getPaginatedDataParams,
+  props: getPaginatedDataProps,
   signal?: AbortSignal
 ) => {
-  return axios.get(`/${params.endpoint}`, {
+  const params = new URLSearchParams();
+  params.append("page", props.page.toString());
+  params.append("limit", "10");
+  params.append("movieId", props.movieId.toString());
+
+  if (props.other) {
+    for (const [key, value] of Object.entries(props.other)) {
+      if (Array.isArray(value)) {
+        for (const v of value) {
+          params.append(key, v);
+        }
+        continue;
+      } else {
+        params.append(key, value);
+      }
+    }
+  }
+
+  return axios.get(`/${props.endpoint}`, {
     ...options,
-    params: {
-      page: params.page,
-      limit: 10,
-      movieId: params.movieId,
-      ...params.other,
-    },
+    params,
     signal,
   });
 };

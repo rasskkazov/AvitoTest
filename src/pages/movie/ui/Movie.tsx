@@ -5,14 +5,12 @@ import {
   Group,
   useAdaptivityWithJSMediaQueries,
   Header,
-  ChipsSelect,
   Button,
   Spinner,
 } from "@vkontakte/vkui";
 import React, { useEffect, useState } from "react";
-import { Carousel, PaginatedList } from "../../../features";
-import { NavLink, useNavigate, useParams } from "react-router-dom";
-import { getMovieById, getPaginatedData, getPaginatedDataParams } from "../api";
+import { useNavigate, useParams } from "react-router-dom";
+import { getMovieById, getPaginatedData, getPaginatedDataProps } from "../api";
 import {
   ImagePaginated,
   MovieDataType,
@@ -39,7 +37,7 @@ export const Movie = () => {
   const [imageData, setImageData] = useState<ImagePaginated | null>(null);
 
   const updateActorData = (page: number) => {
-    const params: getPaginatedDataParams = {
+    const params: getPaginatedDataProps = {
       endpoint: "person",
       movieId: id ?? "",
       page: page,
@@ -57,7 +55,7 @@ export const Movie = () => {
 
     const ac = new AbortController();
 
-    const initialParams: getPaginatedDataParams = {
+    const initialParams: getPaginatedDataProps = {
       endpoint: "image",
       movieId: id ?? "",
       page: 1,
@@ -76,22 +74,25 @@ export const Movie = () => {
       {
         ...initialParams,
         endpoint: "season",
-        other: { selectFields: "episodes" },
+        other: { selectFields: "episodes", limit: "250" },
       },
       ac.signal
     ).then((res) => {
       setSeasonData(res.data);
-      console.log(res.data);
     });
 
     getPaginatedData(
       {
         ...initialParams,
         endpoint: "review",
+        other: {
+          selectFields: ["author", "review"],
+        },
       },
       ac.signal
     ).then((res) => {
       // setReviewData(res.data);
+      console.log(res.data);
     });
 
     getPaginatedData(
@@ -132,7 +133,10 @@ export const Movie = () => {
                 description={movieData.description}
               />
               <PosterCarousel imageData={imageData} />
-              <SimilarMovies movieData={movieData} />
+
+              {Object.hasOwn(movieData, "similarMovies") && (
+                <SimilarMovies movieData={movieData} />
+              )}
             </Panel>
           </SplitCol>
           {viewWidth > 3 && (

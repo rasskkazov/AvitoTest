@@ -1,11 +1,4 @@
 export type MovieDataType = {
-  //   name: string;
-  //   description: string;
-  //   poster: {
-  //     url: string;
-  //     previewUrl: string;
-  //   };
-
   [key: string]: any;
 };
 // не знаю как обработать тип, который возвращает кинопоиск
@@ -45,4 +38,9 @@ export type SeasonPaginated = PaginatedData<{
     enDescription: string;
   }[];
   id: string;
+}>;
+
+export type ReviewPaginated = PaginatedData<{
+  review: string;
+  author: string;
 }>;
