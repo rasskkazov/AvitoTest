@@ -22,7 +22,11 @@ export const PosterCarousel = (props: PosterCarouselProps) => {
       <img
         src={item.url}
         alt="poster"
-        style={{ width: "100%", maxHeight: "20rem", objectFit: "contain" }}
+        style={{
+          width: "100%",
+          maxHeight: "20rem",
+          objectFit: "contain",
+        }}
       />
     </div>
   ));

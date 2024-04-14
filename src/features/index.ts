@@ -3,3 +3,4 @@ export { Country } from "./filters";
 export { Year } from "./filters";
 export { SuggestionsList } from "./suggestionsList";
 export { Carousel } from "./carousel";
+export { PaginatedList } from "./paginatedList";

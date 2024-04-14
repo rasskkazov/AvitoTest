@@ -10,10 +10,10 @@ import {
   Spinner,
 } from "@vkontakte/vkui";
 import React, { useEffect, useState } from "react";
-import { Carousel } from "../../../features";
+import { Carousel, PaginatedList } from "../../../features";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { getMovieById, getPaginatedData, getPaginatedDataParams } from "../api";
-import { ImageDataType, MovieDataType } from "../types";
+import { ImagePaginated, MovieDataType, ActorPaginated } from "../types";
 import { ROUTES } from "../../../app/router/constants";
 import {
   PosterCarousel,
@@ -21,65 +21,87 @@ import {
   MoviePoster,
   SimilarMovies,
 } from "../../../widgets";
+
 export const Movie = () => {
   const { id } = useParams();
   const [movieData, setMovieData] = useState<MovieDataType | null>(null);
-  const [actorData, setActorData] = useState<ImageDataType | null>(null);
-  const [seasonData, setSeasonData] = useState<ImageDataType | null>(null);
-  const [reviewData, setReviewData] = useState<ImageDataType | null>(null);
-  const [imageData, setImageData] = useState<ImageDataType | null>(null);
+  const [actorData, setActorData] = useState<ActorPaginated | null>(null);
+  const [seasonData, setSeasonData] = useState<ActorPaginated | null>(null);
+  const [reviewData, setReviewData] = useState<ActorPaginated | null>(null);
+  const [imageData, setImageData] = useState<ImagePaginated | null>(null);
+
+  const updateActorData = (page: number) => {
+    const params: getPaginatedDataParams = {
+      endpoint: "person",
+      movieId: id ?? "",
+      page: page,
+      other: { "movies.enProfession": "actor", "movies.id": id ?? "" },
+    };
+    getPaginatedData(params).then((res) => {
+      setActorData(res.data);
+    });
+  };
+  const actorItems = actorData?.docs.map((item) => (
+    <div key={item.id}>{item.enName ?? item.name}</div>
+  ));
 
   useEffect(() => {
     getMovieById(id ?? "").then((res) => {
       setMovieData(res.data);
     });
 
+    const ac = new AbortController();
+
     const initialParams: getPaginatedDataParams = {
       endpoint: "image",
       movieId: id ?? "",
       page: 1,
     };
-    getPaginatedData({
-      ...initialParams,
-      endpoint: "person",
-      other: { "movies.enProfession": "actor", "movies.id": id ?? "" },
-    }).then((res) => {
+    getPaginatedData(
+      {
+        ...initialParams,
+        endpoint: "person",
+        other: { "movies.enProfession": "actor", "movies.id": id ?? "" },
+      },
+      ac.signal
+    ).then((res) => {
       setActorData(res.data);
+      console.log(res.data);
     });
-    getPaginatedData({
-      ...initialParams,
-      endpoint: "season",
-    }).then((res) => {
-      setSeasonData(res.data);
-    });
-
-    getPaginatedData({
-      ...initialParams,
-      endpoint: "review",
-    }).then((res) => {
-      setReviewData(res.data);
+    getPaginatedData(
+      {
+        ...initialParams,
+        endpoint: "season",
+      },
+      ac.signal
+    ).then((res) => {
+      // setSeasonData(res.data);
     });
 
-    getPaginatedData({
-      ...initialParams,
-      endpoint: "image",
-    }).then((res) => {
+    getPaginatedData(
+      {
+        ...initialParams,
+        endpoint: "review",
+      }
+      // signal
+    ).then((res) => {
+      // setReviewData(res.data);
+    });
+
+    getPaginatedData(
+      {
+        ...initialParams,
+        endpoint: "image",
+      },
+      ac.signal
+    ).then((res) => {
       setImageData(res.data);
     });
-  }, [id]);
 
-  const similarItems = movieData?.similarMovies.map((item) => (
-    <NavLink to={`${ROUTES.MOVIE}${item.id}`} key={item.id}>
-      <div>
-        <img
-          src={item.poster?.url}
-          alt={item.name}
-          title={item.name}
-          style={{ width: "100%", aspectRatio: "2/3" }}
-        />
-      </div>
-    </NavLink>
-  ));
+    return () => {
+      ac.abort();
+    };
+  }, [id]);
 
   const navigate = useNavigate();
   const { viewWidth } = useAdaptivityWithJSMediaQueries();
@@ -108,19 +130,21 @@ export const Movie = () => {
             </Panel>
           </SplitCol>
           {viewWidth > 3 && (
-            <SplitCol width="100%" maxWidth="20%" stretchedOnMobile autoSpaced>
+            <SplitCol width="100%" maxWidth="25%" stretchedOnMobile autoSpaced>
               <Panel>
                 <Group>
                   <Header size="large">{`Оценка ${movieData.rating.imdb}`}</Header>
                 </Group>
-                <Group header={<Header mode="secondary">Актеры</Header>}>
-                  <ChipsSelect
-                    id="actors"
-                    // defaultValue={actorItems}
-                    disabled={true}
-                    icon={<></>}
-                  />
-                </Group>
+                {actorData && (
+                  <Group header={<Header mode="secondary">Актеры</Header>}>
+                    <PaginatedList
+                      page={actorData.page}
+                      pages={actorData.pages}
+                      onChange={updateActorData}
+                      elements={actorItems ?? []}
+                    />
+                  </Group>
+                )}
               </Panel>
             </SplitCol>
           )}

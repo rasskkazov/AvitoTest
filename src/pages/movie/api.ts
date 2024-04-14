@@ -24,7 +24,10 @@ export type getPaginatedDataParams = {
     [key: string]: string;
   };
 };
-export const getPaginatedData = (params: getPaginatedDataParams) => {
+export const getPaginatedData = (
+  params: getPaginatedDataParams,
+  signal?: AbortSignal
+) => {
   return axios.get(`/${params.endpoint}`, {
     ...options,
     params: {
@@ -33,5 +36,6 @@ export const getPaginatedData = (params: getPaginatedDataParams) => {
       movieId: params.movieId,
       ...params.other,
     },
+    signal,
   });
 };
