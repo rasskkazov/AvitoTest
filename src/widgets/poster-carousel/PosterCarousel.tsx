@@ -1,9 +1,10 @@
 import { Group, Header } from "@vkontakte/vkui";
 import React from "react";
 import { Carousel } from "../../features";
-import { ImageDataType } from "../../pages/movie/types";
+import { ImagePaginated } from "../../pages/movie/types";
+
 type PosterCarouselProps = {
-  imageData: ImageDataType | null;
+  imageData: ImagePaginated | null;
 };
 export const PosterCarousel = (props: PosterCarouselProps) => {
   const posterItems = props.imageData?.docs.map((item) => (

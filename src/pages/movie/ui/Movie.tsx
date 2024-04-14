@@ -91,7 +91,6 @@ export const Movie = () => {
       ac.signal
     ).then((res) => {
       setSeasonData(res.data);
-      console.log(res.data);
     });
 
     getPaginatedData(

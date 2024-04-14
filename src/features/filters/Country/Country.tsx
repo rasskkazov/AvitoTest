@@ -1,6 +1,6 @@
 import { FormItem, Select } from "@vkontakte/vkui";
 import React from "react";
-import { countries } from "../../../../token/mockData";
+import { countries } from "./mock";
 import { useQuery } from "../hooks";
 
 const countryToRender = [
