@@ -20,7 +20,7 @@ export const AgeRating = () => {
         value={"all"}
         onChange={handleCheckboxChange}
       >
-        Для всех
+        Все
       </Radio>
       {Object.keys(AGE_RATINGS).map((age) => (
         <Radio

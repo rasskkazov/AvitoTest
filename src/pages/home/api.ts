@@ -1,12 +1,11 @@
 import axios from "axios";
-import { token } from "../../../token/token";
 import { QueryParams } from "./types";
 
 const options = {
   method: "GET",
   headers: {
     accept: "application/json",
-    "X-API-KEY": token,
+    "X-API-KEY": process.env.TOKEN,
   },
 };
 
