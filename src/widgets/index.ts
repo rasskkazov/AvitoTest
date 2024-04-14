@@ -9,3 +9,4 @@ export { MoviePoster } from "./moviePoster";
 export { SimilarMovies } from "./similarMovies";
 export { ActorList } from "./paginatedLists/ActorList";
 export { SeasonList } from "./paginatedLists/SeasonList";
+export { ReviewList } from "./paginatedLists/ReviewList";

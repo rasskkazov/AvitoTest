@@ -54,7 +54,7 @@ const devServer = {
     progress: true, // Prints compilation progress in percentage in the browser.
   },
 
-  port: 3000,
+  port: 7070,
   /**
    * Writes files to output path (default: false)
    * Build dir is not cleared using <output: {clean:true}>

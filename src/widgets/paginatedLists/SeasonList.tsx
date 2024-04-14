@@ -15,7 +15,7 @@ export const SeasonList = (props: SeasonListProps) => {
   ));
 
   return (
-    <Group header={<Header mode="secondary">Сезоны</Header>}>
+    <Group header={<Header mode="secondary">Сезоны и эпизоды</Header>}>
       <PaginatedList
         page={props.page}
         pages={props.pages}

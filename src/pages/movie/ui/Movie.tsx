@@ -16,8 +16,8 @@ import {
   MovieDataType,
   ActorPaginated,
   SeasonPaginated,
+  ReviewPaginated,
 } from "../types";
-import { ROUTES } from "../../../app/router/constants";
 import {
   PosterCarousel,
   MovieDescription,
@@ -25,6 +25,7 @@ import {
   SimilarMovies,
   ActorList,
   SeasonList,
+  ReviewList,
 } from "../../../widgets";
 
 export const Movie = () => {
@@ -32,9 +33,9 @@ export const Movie = () => {
   const [movieData, setMovieData] = useState<MovieDataType | null>(null);
   const [actorData, setActorData] = useState<ActorPaginated | null>(null);
   const [seasonData, setSeasonData] = useState<SeasonPaginated | null>(null);
-  const [curSeason, setCurSeason] = useState(1);
-  const [reviewData, setReviewData] = useState<ActorPaginated | null>(null);
+  const [reviewData, setReviewData] = useState<ReviewPaginated | null>(null);
   const [imageData, setImageData] = useState<ImagePaginated | null>(null);
+  const [curSeason, setCurSeason] = useState(1);
 
   const updateActorData = (page: number) => {
     const params: getPaginatedDataProps = {
@@ -47,13 +48,24 @@ export const Movie = () => {
       setActorData(res.data);
     });
   };
+  const updateReviewData = (page: number) => {
+    const params: getPaginatedDataProps = {
+      endpoint: "review",
+      movieId: id ?? "",
+      page: page,
+      other: { selectFields: ["author", "review"], limit: "4" },
+    };
+    getPaginatedData(params).then((res) => {
+      setReviewData(res.data);
+    });
+  };
 
   useEffect(() => {
+    const ac = new AbortController();
+
     getMovieById(id ?? "").then((res) => {
       setMovieData(res.data);
     });
-
-    const ac = new AbortController();
 
     const initialParams: getPaginatedDataProps = {
       endpoint: "image",
@@ -79,22 +91,23 @@ export const Movie = () => {
       ac.signal
     ).then((res) => {
       setSeasonData(res.data);
+      console.log(res.data);
     });
 
     getPaginatedData(
       {
         ...initialParams,
         endpoint: "review",
+
         other: {
           selectFields: ["author", "review"],
+          limit: "4",
         },
       },
       ac.signal
     ).then((res) => {
-      // setReviewData(res.data);
-      console.log(res.data);
+      setReviewData(res.data);
     });
-
     getPaginatedData(
       {
         ...initialParams,
@@ -112,6 +125,10 @@ export const Movie = () => {
 
   const navigate = useNavigate();
   const { viewWidth } = useAdaptivityWithJSMediaQueries();
+
+  // const poster = (
+
+  // );
   return (
     <SplitLayout style={{ justifyContent: "center" }}>
       {movieData && (
@@ -132,6 +149,35 @@ export const Movie = () => {
                 name={movieData.name}
                 description={movieData.description}
               />
+              {viewWidth < 4 && (
+                <>
+                  <Group>
+                    <Header size="large">{`Оценка ${movieData.rating.imdb}`}</Header>
+                  </Group>
+                  {actorData && (
+                    <ActorList
+                      actorData={actorData}
+                      updateActorData={updateActorData}
+                    />
+                  )}
+                  {seasonData && seasonData.docs.length > 0 && (
+                    <SeasonList
+                      pages={seasonData.docs.length - 1}
+                      page={curSeason}
+                      updateSeasonData={(n) => setCurSeason(n)}
+                      episodes={seasonData.docs[curSeason].episodes.map(
+                        (item) => item.enName
+                      )}
+                    />
+                  )}
+                </>
+              )}
+              {reviewData && (
+                <ReviewList
+                  reviewData={reviewData}
+                  updateReviewData={updateReviewData}
+                />
+              )}
               <PosterCarousel imageData={imageData} />
 
               {Object.hasOwn(movieData, "similarMovies") && (
@@ -153,10 +199,10 @@ export const Movie = () => {
                 )}
                 {seasonData && seasonData.docs.length > 0 && (
                   <SeasonList
-                    pages={seasonData.docs.length}
+                    pages={seasonData.docs.length - 1}
                     page={curSeason}
                     updateSeasonData={(n) => setCurSeason(n)}
-                    episodes={seasonData.docs[curSeason - 1].episodes.map(
+                    episodes={seasonData.docs[curSeason].episodes.map(
                       (item) => item.enName
                     )}
                   />

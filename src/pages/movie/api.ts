@@ -30,7 +30,6 @@ export const getPaginatedData = (
 ) => {
   const params = new URLSearchParams();
   params.append("page", props.page.toString());
-  params.append("limit", "10");
   params.append("movieId", props.movieId.toString());
 
   if (props.other) {

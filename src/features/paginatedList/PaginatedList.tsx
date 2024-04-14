@@ -12,7 +12,7 @@ export const PaginatedList = (props: PaginatedListData) => {
     <div
       style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
     >
-      <List>
+      <List style={{ marginRight: "auto" }}>
         {props.elements.length === 0 && <div>Список пуст</div>}
         {props.elements.length && (
           <>

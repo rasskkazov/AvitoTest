@@ -1,4 +1,4 @@
-import { Group } from "@vkontakte/vkui";
+import { Group, useAdaptivityWithJSMediaQueries } from "@vkontakte/vkui";
 import React from "react";
 
 type MoviePosterProps = {
@@ -6,6 +6,7 @@ type MoviePosterProps = {
   name: string;
 };
 export const MoviePoster = ({ ...props }: MoviePosterProps) => {
+  const { viewWidth } = useAdaptivityWithJSMediaQueries();
   return (
     <Group>
       <div className="mainList__container">
@@ -13,7 +14,10 @@ export const MoviePoster = ({ ...props }: MoviePosterProps) => {
           src={props.url}
           alt={props.name}
           title={props.name}
-          style={{ width: "100%", borderRadius: "10px" }}
+          style={{
+            width: viewWidth > 3 ? "100%" : "30%",
+            borderRadius: "10px",
+          }}
         />
       </div>
     </Group>

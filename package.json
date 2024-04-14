@@ -33,6 +33,7 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^14.0.0",
     "@types/jest": "^29.5.2",
+    "@types/react-show-more-text": "^1.4.5",
     "@types/redux-logger": "^3.0.9",
     "@typescript-eslint/eslint-plugin": "^6.1.0",
     "@typescript-eslint/parser": "^6.1.0",
@@ -87,6 +88,7 @@
     "react-dom": "^18.2.0",
     "react-redux": "^8.1.1",
     "react-router-dom": "^6.14.1",
+    "react-show-more-text": "^1.7.1",
     "stylelint-scss": "^6.2.1"
   }
 }
